@@ -1,6 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
-import express from "express";
-import dotenv from "dotenv";
+const createClient = require('@supabase/supabase-js').createClient;
+const express = require('express');
+const dotenv = require('dotenv');
+
+const supabaseMiddleware = require('./utilities/supabaseMiddleware');
+const productRouter = require('./routes/productRoutes');
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -15,6 +18,11 @@ app.use(express.json());
 const supabaseUrl = 'https://stjpdrhuqnrglyuomhnq.supabase.co'
 const supabaseKey = process.env.SUPABASE_KEY
 const supabase = createClient(supabaseUrl, supabaseKey)
+// attach supabase client to every incoming req
+app.use(supabaseMiddleware(supabase));  
+
+// routers
+app.use('/products', productRouter);
 
 app.listen(port, () => {
   console.log(`Server started on PORT: ${port}.`);
