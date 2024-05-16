@@ -8,11 +8,15 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
     .from("products")
     .select("*")
     .then((data) => {
-      res.status(200).json(data);
+      res.status(200).json({
+        status: "success",
+        data: data.data,
+      });
     })
     .catch((error) => {
-      res.status(200).json({
-        status: "error occured while retrieving data",
+      res.status(400).json({
+        status: "error",
+        message: "Error occured while retrieving data",
       });
     });
 });
@@ -26,18 +30,29 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
     return next(new AppError("Please provide a productId", 400));
   }
 
+  // 2) checking if product with this id exist
+  var response = await supabase
+    .from("products")
+    .select("*")
+    .eq("id", productId);
+  if (response.data.length == 0) {
+    return next(new AppError("Product with this id does not exist", 404));
+  }
+
   await supabase
     .from("products")
     .delete()
     .eq("id", productId)
     .then((data) => {
       res.status(204).json({
-        status: "product removed successfully",
+        status: "success",
+        message: "product removed successfully",
       });
     })
     .catch((error) => {
       res.status(400).json({
-        status: "error occured while removing product",
+        status: "error",
+        message: "error occured while removing product",
       });
     });
 });
@@ -49,6 +64,15 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   // 1) checking if requried data was sent
   if (!productId) {
     return next(new AppError("Product Id not found", 401));
+  }
+
+  // 2) checking if product with this id exist
+  var response = await supabase
+    .from("products")
+    .select("*")
+    .eq("id", productId);
+  if (response.data.length == 0) {
+    return next(new AppError("Product with this id does not exist", 404));
   }
 
   const updateData = {};
@@ -71,13 +95,15 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
     .update(updateData)
     .eq("id", productId)
     .then((data) => {
-      res.status(201).json({
-        status: "Data updated",
+      res.status(200).json({
+        status: "success",
+        message: "Data updated",
       });
     })
     .catch((error) => {
       res.status(400).json({
-        status: "error occured while updating product",
+        status: "error",
+        message: "Error occured while updating product",
       });
     });
 });
@@ -103,12 +129,14 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     })
     .then((data) => {
       res.status(201).json({
-        status: "product created successfully",
+        status: "success",
+        message: "product created successfully",
       });
     })
     .catch((error) => {
       res.status(400).json({
-        status: "error occured while inserting product",
+        status: "error",
+        message: "error occured while inserting product",
       });
     });
 });

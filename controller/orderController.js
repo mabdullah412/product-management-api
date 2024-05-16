@@ -4,7 +4,7 @@ const catchAsync = require("../utilities/catchAsync");
 exports.getOrderData = catchAsync(async (req, res, next) => {
   const supabase = req.supabase;
   const userId = req.userId;
-  const orderId = req.body.id;
+  const orderId = req.query.orderId;
 
   // get order_items
   var orderItemsResponse = await supabase
@@ -27,7 +27,8 @@ exports.getOrderData = catchAsync(async (req, res, next) => {
     })
     .catch((error) => {
       res.status(400).json({
-        status: "Error occured while placing order",
+        status: "error",
+        message: "Error occured while placing order",
       });
     });
 });
@@ -47,7 +48,7 @@ exports.placeOrder = catchAsync(async (req, res, next) => {
     .eq("cartId", cartId);
 
   if (cartItems.data.length == 0) {
-    return next(new AppError("There are no items in cart", 400));
+    return next(new AppError("There are no items in cart", 404));
   }
 
   // retrieve all product ids from productsInCart
@@ -106,7 +107,7 @@ exports.placeOrder = catchAsync(async (req, res, next) => {
     .select("productId, quantity")
     .then((data) => {
       res.status(200).json({
-        status: "Order placed successfully",
+        status: "success",
         orderId: createOrderResponse.data[0].id,
         total_cost: total_cost,
         products: data.data,
@@ -114,7 +115,8 @@ exports.placeOrder = catchAsync(async (req, res, next) => {
     })
     .catch((error) => {
       res.status(400).json({
-        status: "Error occured while placing order",
+        status: "error",
+        message: "Error occured while placing order",
       });
     });
 });

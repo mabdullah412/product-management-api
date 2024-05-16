@@ -5,38 +5,42 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Mini Blog API",
+      title: "Product Management API",
       description:
-        "API endpoints for a mini blog services documented on swagger",
+        "API endpoints for a simple e-commerce application using Node.js and Express.js. Use the User Route to generate a JWT token. Enter the token by pressing the Authorize button.",
       contact: {
-        name: "Desmond Obisi",
-        email: "info@miniblog.com",
-        url: "https://github.com/DesmondSanctity/node-js-swagger",
+        name: "Muhammad Abdullah",
+        email: "muhammad.abdullah02@outlook.com",
+        url: "https://github.com/mabdullah412/product-management-api",
       },
       version: "1.0.0",
     },
     servers: [
       {
-        url: "http://localhost:8080/",
+        url: "http://localhost:3000/",
         description: "Local server",
       },
       {
-        url: "<your live url here>",
-        description: "Live server",
+        url: "https://product-management-api-psi.vercel.app",
+        description: "Live server deployed at Vercel",
       },
     ],
   },
   // looks for configuration in specified directories
-  apis: ["./router/*.js"],
+  apis: ["./routes/*.js"],
 };
+
 const swaggerSpec = swaggerJsdoc(options);
+
 function swaggerDocs(app, port) {
   // Swagger Page
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
   // Documentation in JSON format
   app.get("/docs.json", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.send(swaggerSpec);
   });
 }
-export default swaggerDocs;
+
+module.exports = swaggerDocs;

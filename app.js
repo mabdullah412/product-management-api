@@ -7,6 +7,7 @@ const productRouter = require("./routes/productRoutes");
 const orderRouter = require("./routes/orderRoutes");
 const userRouter = require("./routes/userRoutes");
 const cartRouter = require("./routes/cartRoutes");
+const swaggerDocs = require("./swagger");
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -33,3 +34,4 @@ app.use("/cart", cartRouter);
 app.listen(port, () => {
   console.log(`Server started on PORT: ${port}.`);
 });
+swaggerDocs(app, port);

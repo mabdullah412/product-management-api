@@ -21,7 +21,8 @@ exports.getCartItems = catchAsync(async (req, res, next) => {
     })
     .catch((error) => {
       res.status(400).json({
-        status: "Error occured while fetching cart data",
+        status: "error",
+        message: "Error occured while fetching cart data",
       });
     });
 });
@@ -51,7 +52,7 @@ exports.removeFromCart = catchAsync(async (req, res, next) => {
     .eq("cartId", cartId)
     .eq("productId", productId);
   if (response.data.length == 0) {
-    return next(new AppError("This product is not in cart", 400));
+    return next(new AppError("This product is not in cart", 404));
   }
 
   await supabase
@@ -61,12 +62,14 @@ exports.removeFromCart = catchAsync(async (req, res, next) => {
     .eq("productId", productId)
     .then((data) => {
       res.status(200).json({
-        status: "Item successfully removed from cart",
+        status: "success",
+        message: "Item successfully removed from cart",
       });
     })
     .catch((error) => {
       res.status(400).json({
-        status: "Error occured while removing item from cart",
+        status: "error",
+        message: "Error occured while removing item from cart",
       });
     });
 });
@@ -114,12 +117,14 @@ exports.addToCart = catchAsync(async (req, res, next) => {
       })
       .then((data) => {
         res.status(200).json({
-          status: "Item added to cart successfully",
+          status: "success",
+          message: "Item added to cart successfully",
         });
       })
       .catch((error) => {
         res.status(400).json({
-          status: "Error occured while adding item to cart",
+          status: "error",
+          message: "Error occured while adding item to cart",
         });
       });
   }
@@ -128,18 +133,20 @@ exports.addToCart = catchAsync(async (req, res, next) => {
     await supabase
       .from("cart_items")
       .update({
-        quantity: response.data[0].quantity + quantity,
+        quantity: parseFloat(response.data[0].quantity) + parseFloat(quantity),
       })
       .eq("cartId", cartId)
       .eq("productId", productId)
       .then((data) => {
         res.status(200).json({
-          status: "Item added to cart successfully",
+          status: "success",
+          message: "Item added to cart successfully",
         });
       })
       .catch((error) => {
         res.status(400).json({
-          status: "Error occured while adding item to cart",
+          status: "error",
+          message: "Error occured while adding item to cart",
         });
       });
   }
