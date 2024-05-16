@@ -3,10 +3,10 @@ const { promisify } = require("util");
 const AppError = require("../utilities/appError");
 const catchAsync = require("../utilities/catchAsync");
 
-const signToken = (email) =>
-  // inputs: email, secret_phrase, expires_in
+const signToken = (id) =>
+  // inputs: id, secret_phrase, expires_in
   // output: token
-  jwt.sign({ email }, process.env.JWT_SECRET, {
+  jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
@@ -20,44 +20,47 @@ exports.signup = catchAsync(async (req, res, next) => {
   }
 
   // 2) checking if user with this email already exist
-  var doesUserExist = await supabase
+  var response = await supabase
     .from("users")
     .select("email")
-    .eq("email", email)
-    .then((data) => {
-      if (data.data.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    .eq("email", email);
 
-  if (doesUserExist) {
+  if (response.data.length > 0) {
     return next(new AppError("User with this email already exits", 400));
   }
 
-  await supabase
+  var response = await supabase
     .from("users")
     .insert({
       name: name,
       email: email,
       password: password,
     })
-    .then((data) => {
-      // create jwt token
-      const token = signToken(email);
+    .select("id");
 
-      res.status(201).json({
-        status: "success",
-        name: name,
-        token: token,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        status: "error occured while creating user",
-      });
+  var newUserId = response.data[0].id;
+
+  // return if error occured
+  if (response.status == 400) {
+    res.status(400).json({
+      status: "Error occured while creating user",
     });
+    return;
+  }
+
+  // create auth token
+  const token = signToken(newUserId);
+
+  res.status(201).json({
+    status: "success",
+    userId: newUserId,
+    token: token,
+  });
+
+  // also create a new cart with user id
+  await supabase.from("carts").insert({
+    userId: newUserId,
+  });
 });
 
 exports.validateTokenStatus = catchAsync(async (req, res, next) => {
@@ -81,12 +84,12 @@ exports.validateTokenStatus = catchAsync(async (req, res, next) => {
     process.env.JWT_SECRET
   );
 
-  // token gives user email after decooded
-  // 3) checking if user exists with this email
+  // token gives user id after decooded
+  // 3) checking if user exists with this id
   var doesUserExist = await supabase
     .from("users")
-    .select("email")
-    .eq("email", decodedToken.id)
+    .select("id")
+    .eq("id", decodedToken.id)
     .then((data) => {
       if (data.data.length > 0) {
         return true;
@@ -99,5 +102,6 @@ exports.validateTokenStatus = catchAsync(async (req, res, next) => {
     return next(new AppError("User of this token no longer exists", 401));
   }
 
+  req.userId = decodedToken.id;
   next();
 });
