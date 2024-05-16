@@ -14,7 +14,6 @@ exports.getCartItems = catchAsync(async (req, res, next) => {
     .select("productId, quantity")
     .eq("cartId", cartId)
     .then((data) => {
-      console.log(data);
       res.status(200).json({
         status: "success",
         data: data.data,
@@ -61,7 +60,6 @@ exports.removeFromCart = catchAsync(async (req, res, next) => {
     .eq("cartId", cartId)
     .eq("productId", productId)
     .then((data) => {
-      console.log(data);
       res.status(200).json({
         status: "Item successfully removed from cart",
       });

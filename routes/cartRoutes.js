@@ -13,7 +13,4 @@ router
 router
 .post('/remove', authController.validateTokenStatus, cartController.removeFromCart);
 
-router
-.post('/placeOrder', authController.validateTokenStatus);
-
 module.exports = router;
