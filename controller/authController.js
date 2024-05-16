@@ -71,7 +71,7 @@ exports.validateTokenStatus = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError("Auth token not found. You are Unauthorized.", 401)
+      new AppError("Auth token not found. You are not authorized.", 401)
     );
   }
 
