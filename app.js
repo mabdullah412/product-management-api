@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 
 const supabaseMiddleware = require('./utilities/supabaseMiddleware');
 const productRouter = require('./routes/productRoutes');
+const userRouter = require('./routes/userRoutes');
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -23,6 +24,7 @@ app.use(supabaseMiddleware(supabase));
 
 // routers
 app.use('/products', productRouter);
+app.use('/users', userRouter);
 
 app.listen(port, () => {
   console.log(`Server started on PORT: ${port}.`);

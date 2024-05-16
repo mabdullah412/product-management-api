@@ -8,11 +8,9 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
     .from("products")
     .select("*")
     .then((data) => {
-      console.log("Product retrieved!", data);
       res.status(200).json(data);
     })
     .catch((error) => {
-      console.error("Error retrieving product:", error);
       res.status(200).json({
         status: "error",
       });
@@ -20,23 +18,25 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
 });
 
 exports.createProduct = catchAsync(async (req, res, next) => {
-  const productData = req.query;
   const supabase = req.supabase;
-
+  const { name, description, price, category } = req.body;
+  
   await supabase
     .from("products")
-    .insert(productData)
+    .insert({
+      name: name,
+      description: description,
+      price: price,
+      category: category,
+    })
     .then((data) => {
-      console.log("Product inserted successfully!", data);
-      res.status(200).json({
+      res.status(201).json({
         status: "created",
       });
     })
     .catch((error) => {
-      console.error("Error inserting product:", error);
-      res.status(201).json({
-        status: "created",
+      res.status(400).json({
+        status: "error occured while inserting product",
       });
     });
-
 });
