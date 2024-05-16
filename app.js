@@ -17,6 +17,8 @@ dotenv.config({ path: "./config.env" });
 
 // middleware to parse incoming json data
 app.use(express.json());
+// middleware to serve static files
+app.use(express.static(`${__dirname}/public`));
 
 // connecting to supabase database
 const supabaseUrl = "https://stjpdrhuqnrglyuomhnq.supabase.co";
@@ -24,6 +26,11 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 // attach supabase client to every incoming req
 app.use(supabaseMiddleware(supabase));
+
+// default
+app.get('/', function(req, res) {
+  res.sendFile('index.html');
+});
 
 // routers
 app.use("/products", productRouter);

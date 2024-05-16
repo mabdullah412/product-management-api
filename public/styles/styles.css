@@ -1,0 +1,112 @@
+/* DM Serif Display */
+/* font-family: 'DM Serif Display', serif; */
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
+/* DM Sans: Regular Medium Bold */
+/* font-family: 'DM Sans', sans-serif; */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+
+:root {
+  --color-primary: #009178;
+  --color-secondary: #3e3b2a;
+  --color-background: #fffae5;
+  --color-styles: #f2fedc;
+
+  --padding-outer-vertical: 40px;
+  --padding-outer-horizontal: 60px;
+  --app-radius-large: 50px;
+  --app-radius-small: 32px;
+}
+
+/* removing default margins and paddings */
+h1,
+p,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+
+  font-family: "DM Sans", sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-secondary);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.heading {
+  font-size: 3rem;
+  font-family: "DM Serif Display", serif;
+}
+
+.description {
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.description:last-child {
+  margin-top: 5px;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.primary-color {
+  color: var(--color-primary);
+}
+
+.buttons {
+  display: flex;
+  gap: 2rem;
+}
+
+.btn {
+  font-family: "DM Sans", sans-serif;
+  height: 70px;
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 40px;
+  padding-right: 40px;
+  text-transform: uppercase;
+  color: var(--color-background);
+  background-color: var(--color-primary);
+  border-radius: var(--app-radius-large);
+  border: 2px solid var(--color-primary);
+  transition-duration: 0.15s;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+}
+
+.btn:hover {
+  cursor: pointer;
+  background-color: #01aa8e;
+}
+
+.btn:active {
+  color: var(--color-primary);
+  background-color: var(--color-styles);
+}
+
+.btn__outline {
+  background-color: transparent;
+  border-radius: var(--app-radius-large);
+  border: 1px solid var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.btn__outline:hover {
+  cursor: pointer;
+  background-color: #01aa8e;
+}
+
+.btn__outline:active {
+  color: var(--color-primary);
+  background-color: var(--color-styles);
+}
